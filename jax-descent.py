@@ -28,17 +28,11 @@ def grad_f_hardcoded(x):
     return jnp.array([df_dx1, df_dx2])
 
 
-# Optional check: Verify analytical gradient matches JAX automatic differentiation
-# jax_grad = jax.grad(f)(jnp.array([2.0, 3.0]))
-# hardcoded_grad = grad_f_hardcoded(jnp.array([2.0, 3.0]))
-# print("AD match check:", jnp.allclose(jax_grad, hardcoded_grad))
-
-
 # ------------------------------------------------------------------
 # 2. Optimization Procedures (Vanilla GD & Momentum GD)
 # ------------------------------------------------------------------
 
-def vanilla_gradient_descent(x_init, lr=0.1, n_steps=100):
+def vanilla_gradient_descent(x_init, lr=0.5, n_steps=100):
     """Standard Gradient Descent."""
     history_x = [x_init]
     history_grad_norm = []
@@ -75,10 +69,12 @@ def momentum_gradient_descent(x_init, lr=0.1, beta=0.9, n_steps=100):
 # ------------------------------------------------------------------
 
 # Configuration
-x_start = jnp.array([8.0, 8.0])  # Starting point in [0, 10]^2 domain
-n_steps = 80
-lr = 0.15
-beta = 0.85
+seed = 67 #67!
+key = jax.random.key(seed)
+x_start = jax.random.uniform(key, shape=(2,), minval=0.0, maxval=10.0)
+n_steps = 200
+lr = 0.1
+beta = (1-lr)
 
 # Run optimizers
 path_gd, grads_gd = vanilla_gradient_descent(x_start, lr=lr, n_steps=n_steps)
